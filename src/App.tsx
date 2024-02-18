@@ -6,9 +6,9 @@ function App() {
 
   return (
     <>
-    <ProtectedRoute>
-      <MainLayout />
-    </ProtectedRoute>
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
     </>
   )
 }
