@@ -37,7 +37,7 @@ const Login = () => {
       toast.success('Logged in', {id: toastId, duration: 2000})
       navigate(`/${user.role}/dashboard`)
     }catch (err){
-      toast.error('Something wait wrong', {id: toastId, duration: 2000})
+      toast.error('Something went wrong', {id: toastId, duration: 2000})
     }
   }
 
@@ -45,12 +45,10 @@ const Login = () => {
     <Row justify="center" align="middle" style={{height: '100vh'}}>
       <PHForm onSubmit={onSubmit}>
         <div>
-          <label htmlFor="id">ID:</label> <br />
-          <PHInput type="text" name="id" />
+          <PHInput type="text" name="id" label="ID:" />
         </div>
         <div>
-          <label htmlFor="password">Password:</label> <br />
-          <PHInput type="text" name="password" />
+          <PHInput type="text" name="password" label="Password:" />
         </div>
         <Button htmlType="submit" style={{marginTop: '10px'}}>Login</Button>
       </PHForm>
