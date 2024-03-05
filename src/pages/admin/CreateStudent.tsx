@@ -2,6 +2,11 @@ import {FieldValues, SubmitHandler} from "react-hook-form";
 import PHForm from "../../components/form/PHForm";
 import PHInput from "../../components/form/PHInput";
 import {Button, Col, Divider, Row} from "antd";
+import PHSelect from "../../components/form/PHSelect";
+import {bloodGroupOptions, genderOptions} from "../../constants/global";
+import PHDatePicker from "../../components/form/PHDatePicker";
+import {useGetAllAcademicDepartmentQuery, useGetAllSemestersQuery} from "../../redux/features/admin/academicManagement";
+import {useAddStudentMutation} from "../../redux/features/admin/userManagementApi";
 
 const studentDummyData = {
   student: {
@@ -32,29 +37,86 @@ const studentDummyData = {
           contactNo: "777-888-9999",
           address: "789 Pine St, Villageton"
       },
-      admissionSemester: "65b0104110b74fcbd7a25d92",
-      academicDepartment: "65b00fb010b74fcbd7a25d8e"
+      admissionSemester: "65d218736ce372f6508f3325",
+      academicDepartment: "65e5a84f75386c17f1ad7fa7"
   }
 }
 
+// ! This is only for development
+const studentDefaultValues = {
+  name: {
+    firstName: "I am ",
+    middleName: "Student",
+    lastName: "Number 1"
+},
+gender: "male",
+
+email: "student1234@gmail.com",
+contactNo: "1235678",
+emergencyContactNo: "987-654-3210",
+bloogGroup: "A+",
+presentAddress: "123 Main St, Cityville",
+permanentAddress: "456 Oak St, Townsville",
+guardian: {
+    fatherName: "James Doe",
+    fatherOccupation: "Engineer",
+    fatherContactNo: "111-222-3333",
+    motherName: "Mary Doe",
+    motherOccupation: "Teacher",
+    motherContactNo: "444-555-6666"
+},
+localGuardian: {
+    name: "Alice Johnson",
+    occupation: "Doctor",
+    contactNo: "777-888-9999",
+    address: "789 Pine St, Villageton"
+},
+
+
+}
+
 const CreateStudent = () => {
+
+  const [addStudent] = useAddStudentMutation()
+
+  const {data: semesterData, isLoading: semesterIsLoading} = useGetAllSemestersQuery(undefined)
   
+  const semesterOptions = semesterData?.data?.map((item) => ({
+    value: item._id,
+    label: `${item?.name} - ${item?.year}`
+  }))!
+
+  const {data: departmentData, isLoading: departmentIsLoading} = useGetAllAcademicDepartmentQuery(undefined)
+  
+  const departmentOptions = departmentData?.data?.map((item) => ({
+    value: item._id,
+    label: item?.name
+  }))!
 
 const onSubmit : SubmitHandler<FieldValues> = (data : FieldValues) => {
-  console.log(data)
+  const studentData = {
+    password: 'student123',
+    student: data
+  }
 
-  // const formData = new FormData();
+  const formData = new FormData();
 
-  // formData.append('data', JSON.stringify(data))
+  formData.append('data', JSON.stringify(studentData))
+
+  addStudent(formData)
 
   // console.log(Object.fromEntries(formData))
+}
+
+if(semesterIsLoading){
+  return <p>Loading....</p>
 }
 
   return (
     <>
       <Row>
         <Col span={24}>
-          <PHForm onSubmit={onSubmit}>
+          <PHForm onSubmit={onSubmit} defaultValues={studentDefaultValues}>
             <Divider>Personal Info</Divider>
             <Row gutter={8}>
               <Col span={24} md={{span: 12}} lg={{span: 8}}>
@@ -67,13 +129,13 @@ const onSubmit : SubmitHandler<FieldValues> = (data : FieldValues) => {
                 <PHInput type="text" name="name.lastName" label="Last Name" />
               </Col>
               <Col span={24} md={{span: 12}} lg={{span: 8}}>
-                <PHInput type="text" name="gender" label="Gender" />
+                <PHSelect name="gender" label="Gender" options={genderOptions} />
               </Col>
               <Col span={24} md={{span: 12}} lg={{span: 8}}>
-                <PHInput type="text" name="dateOfBirth" label="Date of Birth" />
+                <PHDatePicker name="dateOfBirth" label="Date of Birth" />
               </Col>
               <Col span={24} md={{span: 12}} lg={{span: 8}}>
-                <PHInput type="text" name="bloogGroup" label="Blood Group" />
+                <PHSelect name="bloogGroup" label="Blood Group" options={bloodGroupOptions} />
               </Col>
             </Row>
 
@@ -137,10 +199,10 @@ const onSubmit : SubmitHandler<FieldValues> = (data : FieldValues) => {
             <Divider>Other Info</Divider>
             <Row gutter={8}>
               <Col span={24} md={{span: 12}}>
-                <PHInput type="text" name="admissionSemester" label="Admission Semester" />
+                <PHSelect options={semesterOptions} disabled={semesterIsLoading} name="admissionSemester" label="Admission Semester" />
               </Col>
               <Col span={24} md={{span: 12}}>
-                <PHInput type="text" name="academicDepartment" label="Academic Department" />
+                <PHSelect options={departmentOptions} disabled={departmentIsLoading} name="academicDepartment" label="Academic Department" />
               </Col>
             </Row>
 

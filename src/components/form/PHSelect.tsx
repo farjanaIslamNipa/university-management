@@ -8,11 +8,12 @@ type TPHSelectProps = {
     value: string;
     label: string;
     disabled?: boolean;
-  }[]
+  }[] | undefined;
+  disabled?: boolean;
 }
 
 
-const PHSelect = ({label, name, options} : TPHSelectProps) => {
+const PHSelect = ({label, name, options, disabled} : TPHSelectProps) => {
 
   return (
     <Controller 
@@ -23,6 +24,7 @@ const PHSelect = ({label, name, options} : TPHSelectProps) => {
           style={{ width: '100%' }}
           {...field}
           options={options}
+          disabled={disabled}
         />
         {error && <small style={{color: 'red'}}>{error?.message}</small>}
       </Form.Item>

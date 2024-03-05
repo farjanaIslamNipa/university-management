@@ -8,7 +8,7 @@ import PHSelect from "../../components/form/PHSelect";
 import {useAddAcademicDepartmentMutation, useGetAllAcademicFacultyQuery} from "../../redux/features/admin/academicManagement";
 import {toast} from "sonner";
 import {TResponse} from "../../types";
-import {TAcademicFaculty} from "../../types/academicManagement.types";
+import {TAcademicDepartment} from "../../types/academicManagement.types";
 
 const CreateAcademicDepartment = () => {
   const {data: facultyData, isLoading} = useGetAllAcademicFacultyQuery(undefined)
@@ -26,7 +26,7 @@ const CreateAcademicDepartment = () => {
       const result = await addAcademicDepartment({
         name: data?.name,
         academicFaculty: data?.academicFaculty
-      }) as TResponse<TAcademicFaculty>
+      }) as TResponse<TAcademicDepartment>
       console.log(result, 'res')
       if(result?.error){
         toast.error(result?.error?.data?.message, {id: toastId})
